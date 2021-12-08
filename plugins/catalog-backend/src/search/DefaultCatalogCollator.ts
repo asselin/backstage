@@ -18,7 +18,12 @@ import {
   PluginEndpointDiscovery,
   TokenManager,
 } from '@backstage/backend-common';
-import { Entity, UserEntity } from '@backstage/catalog-model';
+import {
+  catalogEntityReadPermission,
+  Entity,
+  stringifyEntityRef,
+  UserEntity,
+} from '@backstage/catalog-model';
 import { IndexableDocument, DocumentCollator } from '@backstage/search-common';
 import { Config } from '@backstage/config';
 import {
@@ -129,6 +134,10 @@ export class DefaultCatalogCollator implements DocumentCollator {
         kind: entity.kind,
         lifecycle: (entity.spec?.lifecycle as string) || '',
         owner: (entity.spec?.owner as string) || '',
+        authorization: {
+          permission: catalogEntityReadPermission,
+          resourceRef: stringifyEntityRef(entity),
+        },
       };
     });
   }
